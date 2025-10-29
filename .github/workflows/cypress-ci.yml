@@ -1,0 +1,50 @@
+name: Cypress Tests
+
+on:
+  push:
+    branches: [main, dev]
+  pull_request:
+    branches: [main]
+
+jobs:
+  cypress-tests:
+    runs-on: ubuntu-latest
+    
+    strategy:
+      matrix:
+        browser: [chrome, firefox]
+    
+    steps:
+      -name: Checkout repository
+      - uses: actions/checkout@v4
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18.x'
+      
+      - name: Install dependencies
+        run: npm ci
+      
+      - name: Run Cypress tests
+        uses: cypress-io/github-action@v6
+        with:
+          browser: ${{ matrix.browser }}
+      
+      - name: Upload screenshots
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: cypress-screenshots-${{ matrix.browser }}
+          path: cypress/screenshots
+```
+
+### Step 12: Create Additional Files
+
+Create `.gitignore`:
+```
+node_modules/
+cypress/screenshots/
+cypress/videos/
+cypress/reports/
+.env

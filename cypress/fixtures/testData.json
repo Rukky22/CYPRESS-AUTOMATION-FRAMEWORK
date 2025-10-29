@@ -1,0 +1,46 @@
+{
+  "environments": {
+    "dev": {
+      "url": "https://www.qacar.online/login"
+    }
+  },
+  "validUsers": [
+    {
+      "testCaseId": "CY-TC001",
+      "description": "Admin user login",
+      "username": "admin@test.com",
+      "password": "#Adminpassword",
+      "role": "admin"
+    },
+    {
+      "testCaseId": "CY-TC002",
+      "description": "Regular user login",
+      "username": "user@test.com",
+      "password": "User@123",
+      "role": "user"
+    }
+  ],
+  "invalidUsers": [
+    {
+      "testCaseId": "CY-TC003",
+      "description": "Invalid username",
+      "username": "invalid@test.com",
+      "password": "ValidPassword123",
+      "expectedError": "Invalid credentials"
+    },
+    {
+      "testCaseId": "CY-TC004",
+      "description": "Invalid password",
+      "username": "admin@test.com",
+      "password": "WrongPassword",
+      "expectedError": "Invalid credentials"
+    },
+    {
+      "testCaseId": "CY-TC005",
+      "description": "SQL Injection attempt",
+      "username": "admin' OR '1'='1",
+      "password": "password",
+      "expectedError": "Invalid credentials"
+    }
+  ]
+}
