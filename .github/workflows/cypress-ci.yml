@@ -15,7 +15,7 @@ jobs:
         browser: [chrome, firefox]
     
     steps:
-      -name: Checkout repository
+      - name: Checkout repository
       - uses: actions/checkout@v4
       
       - name: Setup Node.js
@@ -39,12 +39,3 @@ jobs:
           path: cypress/screenshots
 ```
 
-### Step 12: Create Additional Files
-
-Create `.gitignore`:
-```
-node_modules/
-cypress/screenshots/
-cypress/videos/
-cypress/reports/
-.env
