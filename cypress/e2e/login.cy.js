@@ -1,59 +1,70 @@
-import LoginPage from "../pages/loginPage";
+import LoginPage from '../support/pages/LoginPage';
+import testData from '../fixtures/testData.json';
 
-describe("Login Functionality - Cypress Tests", () => {
-  let testData;
+describe('Login Functionality - Cypress Tests', () => {
   let loginPage;
-
-  before(() => {
-    cy.fixture("testData").then((data) => {
-      testData = data;
-    });
-  });
 
   beforeEach(() => {
     loginPage = new LoginPage();
     loginPage.visit();
-    cy.clearCookies();
-    cy.clearLocalStorage();
   });
 
-  describe("Successful Login Scenarios", () => {
-    // Data-driven test using forEach
-    testData?.validUsers?.forEach((user) => {
+  describe('Successful Login Scenarios', () => {
+    testData.validUsers.forEach((user) => {
       it(`${user.testCaseId}: ${user.description}`, () => {
-        cy.log(`Testing with username: ${user.username}`);
-        cy.log(`Role: ${user.role}`);
+        cy.logStep(`Testing user: ${user.username} (${user.role})`);
 
         loginPage.login(user.username, user.password);
-        loginPage.verifySuccessfulLogin();
+        loginPage.verifySuccessfulLogin(user.expectedUrl);
 
-        cy.log(`Test passed for ${user.role} user`);
+        cy.logStep(`✓ Test passed for ${user.role} user`);
       });
     });
   });
 
-  describe("Failed Login Scenarios", () => {
-    // Data-driven test using forEach
-    testData?.invalidUsers?.forEach((user) => {
+  describe('Failed Login Scenarios', () => {
+    testData.invalidUsers.forEach((user) => {
       it(`${user.testCaseId}: ${user.description}`, () => {
-        cy.log(`Testing: ${user.description}`);
+        cy.logStep(`Testing: ${user.description}`);
 
         loginPage.login(user.username, user.password);
         loginPage.verifyLoginFailure(user.expectedError);
 
-        cy.log(`Error message verified correctly`);
+        cy.logStep('✓ Error message verified correctly');
       });
     });
   });
 
-  describe("Additional Validation", () => {
-    it("should display error for empty credentials", () => {
+  describe('Form Validation', () => {
+    it('should display error for empty credentials', () => {
       loginPage.clickLoginButton();
-      cy.get("#errorMessage").should("be.visible");
+      loginPage.errorMessage.should('be.visible');
     });
 
-    it("should have password field masked", () => {
-      cy.get("#password").should("have.attr", "type", "password");
+    it('should mask password field', () => {
+      loginPage.verifyPasswordIsMasked();
+    });
+
+    it('should have all required form elements', () => {
+      loginPage.verifyFormElements();
+    });
+  });
+
+  describe('Security Tests', () => {
+    const securityTests = testData.invalidUsers.filter(
+      (user) => user.testCaseId === 'CY-TC008' || user.testCaseId === 'CY-TC009'
+    );
+
+    securityTests.forEach((test) => {
+      it(`${test.testCaseId}: ${test.description}`, () => {
+        cy.logStep(`Security test: ${test.description}`);
+
+        loginPage.login(test.username, test.password);
+        loginPage.verifyLoginFailure(test.expectedError);
+
+        // Ensure still on login page (not bypassed)
+        cy.url().should('include', '/login');
+      });
     });
   });
 });

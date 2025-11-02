@@ -3,3 +3,18 @@ cypress/screenshots/
 cypress/videos/
 cypress/reports/
 .env
+package-lock.json
+
+# Cypress artifacts
+cypress/downloads/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+*.swp
+```
+

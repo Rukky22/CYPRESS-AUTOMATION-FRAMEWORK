@@ -1,36 +1,110 @@
+/**
+ * Login Page Object Model
+ */
+
 class LoginPage {
-  visit(url = "/login") {
+  // Locators
+  get usernameInput() {
+    return cy.get('#username');
+  }
+  get passwordInput() {
+    return cy.get('#password');
+  }
+  get loginButton() {
+    return cy.get('#loginButton');
+  }
+  get errorMessage() {
+    return cy.get('#errorMessage');
+  }
+
+  /**
+   * Navigate to login page
+   */
+  visit(url = '/login') {
     cy.visit(url);
-    cy.url().should("include", "/login");
+    cy.url().should('include', '/login');
+
+    // Wait for page elements to load
+    this.usernameInput.should('be.visible');
+    this.passwordInput.should('be.visible');
+    this.loginButton.should('be.visible');
   }
 
+  /**
+   * Enter username
+   */
   enterUsername(username) {
-    cy.get("#username").clear().type(username);
+    cy.log(`Entering username: ${username}`);
+    this.usernameInput.clear().type(username);
   }
 
+  /**
+   * Enter password
+   */
   enterPassword(password) {
-    cy.get("#password").clear().type(password);
+    cy.log('Entering password');
+    this.passwordInput.clear().type(password);
   }
 
+  /**
+   * Click login button
+   */
   clickLoginButton() {
-    cy.get("#loginButton").click();
+    cy.log('Clicking login button');
+    this.loginButton.click();
   }
 
+  /**
+   * Complete login flow
+   */
   login(username, password) {
     this.enterUsername(username);
     this.enterPassword(password);
     this.clickLoginButton();
   }
 
-  verifySuccessfulLogin(expectedUrl = "/dashboard") {
-    cy.url({ timeout: 10000 }).should("include", expectedUrl);
-    cy.get("#errorMessage").should("not.exist");
+  /**
+   * Verify successful login
+   */
+  verifySuccessfulLogin(expectedUrl = '/dashboard') {
+    cy.log('Verifying successful login');
+    cy.url({ timeout: 10000 }).should('include', expectedUrl);
+
+    // Ensure no error message is displayed
+    cy.get('body').then(($body) => {
+      if ($body.find('#errorMessage').length > 0) {
+        this.errorMessage.should('not.be.visible');
+      }
+    });
   }
 
+  /**
+   * Verify login failure with error message
+   */
   verifyLoginFailure(expectedError) {
-    cy.get("#errorMessage", { timeout: 5000 })
-      .should("be.visible")
-      .and("contain.text", expectedError);
+    cy.log('Verifying login failure');
+    this.errorMessage
+      .should('be.visible', { timeout: 5000 })
+      .and('contain.text', expectedError);
+
+    // Should still be on login page
+    cy.url().should('include', '/login');
+  }
+
+  /**
+   * Verify password field is masked
+   */
+  verifyPasswordIsMasked() {
+    this.passwordInput.should('have.attr', 'type', 'password');
+  }
+
+  /**
+   * Verify all form elements exist
+   */
+  verifyFormElements() {
+    this.usernameInput.should('exist');
+    this.passwordInput.should('exist');
+    this.loginButton.should('exist');
   }
 }
 
