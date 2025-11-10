@@ -5,24 +5,27 @@
 class LoginPage {
   // Locators
   get usernameInput() {
-    return cy.get('#username');
+    return cy.get("input[name ='username']");
   }
   get passwordInput() {
-    return cy.get('#password');
+    return cy.get("input[name ='password']");
   }
   get loginButton() {
-    return cy.get('#loginButton');
+    return cy.get('button[type="submit"]');
   }
   get errorMessage() {
-    return cy.get('#errorMessage');
+    return cy.get('.oxd-alert-content p');
+  }
+  get emptyFieldError() {
+    return cy.contains('.oxd-input-field-error-message ', 'Required');
   }
 
   /**
    * Navigate to login page
    */
-  visit(url = '/login') {
+  visit(url = '/web/index.php/auth/login') {
     cy.visit(url);
-    cy.url().should('include', '/login');
+    cy.url().should('include', '/auth/login');
 
     // Wait for page elements to load
     this.usernameInput.should('be.visible');
@@ -35,6 +38,11 @@ class LoginPage {
    */
   enterUsername(username) {
     cy.log(`Entering username: ${username}`);
+    if (username === null || username === undefined || username === '') {
+      cy.log('Username is empty - skipping type command');
+      this.usernameInput.clear();
+      return;
+    }
     this.usernameInput.clear().type(username);
   }
 
@@ -43,6 +51,11 @@ class LoginPage {
    */
   enterPassword(password) {
     cy.log('Entering password');
+    if (password === null || password === undefined || password === '') {
+      cy.log('password is empty - skipping type command');
+      this.passwordInput.clear();
+      return;
+    }
     this.passwordInput.clear().type(password);
   }
 
@@ -66,7 +79,7 @@ class LoginPage {
   /**
    * Verify successful login
    */
-  verifySuccessfulLogin(expectedUrl = '/dashboard') {
+  verifySuccessfulLogin(expectedUrl) {
     cy.log('Verifying successful login');
     cy.url({ timeout: 10000 }).should('include', expectedUrl);
 
@@ -88,7 +101,21 @@ class LoginPage {
       .and('contain.text', expectedError);
 
     // Should still be on login page
-    cy.url().should('include', '/login');
+    cy.url().should('include', '/auth/login');
+  }
+
+  /**
+   * Verify login failure due to empty fields
+   */
+
+  verifyEmptyFieldError(expectedError) {
+    cy.log('Verifying empty field error messages');
+    this.emptyFieldError
+      .should('be.visible')
+      .and('contain.text', expectedError);
+
+    // Should still be on Login page
+    cy.url().should('include', '/auth/login');
   }
 
   /**

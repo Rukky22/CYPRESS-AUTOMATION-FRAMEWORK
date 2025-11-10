@@ -1,4 +1,4 @@
-import LoginPage from '../support/pages/LoginPage';
+import LoginPage from '../pages/loginPage';
 import testData from '../fixtures/testData.json';
 
 describe('Login Functionality - Cypress Tests', () => {
@@ -27,18 +27,37 @@ describe('Login Functionality - Cypress Tests', () => {
       it(`${user.testCaseId}: ${user.description}`, () => {
         cy.logStep(`Testing: ${user.description}`);
 
-        loginPage.login(user.username, user.password);
-        loginPage.verifyLoginFailure(user.expectedError);
+        //Handle empty field test differently
+        if (
+          user.errorType == 'empty_username' ||
+          user.errorType == 'empty_password'
+        ) {
+          loginPage.login(user.username, user.password);
+          loginPage.verifyEmptyFieldError(user.expectedError);
+          cy.logStep('✓ Empty field error message verified correctly');
+          return;
+        } else {
+          //Handle other invalid login accordingly
+          loginPage.login(user.username, user.password);
+          loginPage.verifyLoginFailure(user.expectedError);
 
-        cy.logStep('✓ Error message verified correctly');
+          cy.logStep('✓ Error message verified correctly');
+        }
       });
     });
   });
 
   describe('Form Validation', () => {
-    it('should display error for empty credentials', () => {
+    it('should display error message for empty username field', () => {
+      loginPage.enterPassword('admin123');
       loginPage.clickLoginButton();
-      loginPage.errorMessage.should('be.visible');
+      loginPage.verifyEmptyFieldError('Required');
+    });
+
+    it('Should display error message for empty password field', () => {
+      loginPage.enterUsername('Admin');
+      loginPage.clickLoginButton();
+      loginPage.verifyEmptyFieldError('Required');
     });
 
     it('should mask password field', () => {
@@ -52,7 +71,7 @@ describe('Login Functionality - Cypress Tests', () => {
 
   describe('Security Tests', () => {
     const securityTests = testData.invalidUsers.filter(
-      (user) => user.testCaseId === 'CY-TC008' || user.testCaseId === 'CY-TC009'
+      (user) => user.securityTest === true
     );
 
     securityTests.forEach((test) => {
@@ -63,7 +82,7 @@ describe('Login Functionality - Cypress Tests', () => {
         loginPage.verifyLoginFailure(test.expectedError);
 
         // Ensure still on login page (not bypassed)
-        cy.url().should('include', '/login');
+        cy.url().should('include', '/auth/login');
       });
     });
   });

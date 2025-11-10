@@ -1,7 +1,7 @@
 {
   "environments": {
     "dev": {
-      "url": "https://dev.yourapp.com/login"
+      "url": "https://opensource-demo.orangehrmlive.com/web/index.php/auth/login"
     },
     "staging": {
       "url": "https://staging.yourapp.com/login"
@@ -14,41 +14,41 @@
     {
       "testCaseId": "CY-TC001",
       "description": "Admin user login",
-      "username": "admin@test.com",
-      "password": "Admin@123",
+      "username": "Admin",
+      "password": "admin123",
       "role": "admin",
-      "expectedUrl": "/admin/dashboard"
+      "expectedUrl": "/dashboard/index"
     },
     {
       "testCaseId": "CY-TC002",
       "description": "Regular user login",
-      "username": "user@test.com",
-      "password": "User@123",
+      "username": "Admin",
+      "password": "admin123",
       "role": "user",
-      "expectedUrl": "/dashboard"
+      "expectedUrl": "/dashboard/index"
     },
     {
       "testCaseId": "CY-TC003",
       "description": "Manager user login",
-      "username": "manager@test.com",
-      "password": "Manager@123",
+      "username": "Admin",
+      "password": "admin123",
       "role": "manager",
-      "expectedUrl": "/manager/dashboard"
+      "expectedUrl": "/dashboard/index"
     }
   ],
   "invalidUsers": [
     {
       "testCaseId": "CY-TC004",
       "description": "Invalid username",
-      "username": "invalid@test.com",
-      "password": "ValidPassword123",
+      "username": "invaliduser",
+      "password": "admin123",
       "expectedError": "Invalid credentials",
       "errorType": "invalid_username"
     },
     {
       "testCaseId": "CY-TC005",
       "description": "Invalid password",
-      "username": "admin@test.com",
+      "username": "Admin",
       "password": "WrongPassword",
       "expectedError": "Invalid credentials",
       "errorType": "invalid_password"
@@ -57,22 +57,22 @@
       "testCaseId": "CY-TC006",
       "description": "Empty username",
       "username": "",
-      "password": "ValidPassword123",
-      "expectedError": "Username is required",
+      "password": "admin123",
+      "expectedError": "Required",
       "errorType": "empty_username"
     },
     {
       "testCaseId": "CY-TC007",
       "description": "Empty password",
-      "username": "admin@test.com",
+      "username": "Admin",
       "password": "",
-      "expectedError": "Password is required",
+      "expectedError": "Required",
       "errorType": "empty_password"
     },
     {
       "testCaseId": "CY-TC008",
       "description": "SQL Injection attempt",
-      "username": "admin' OR '1'='1",
+      "username": "Admin' OR '1'='1",
       "password": "password",
       "expectedError": "Invalid credentials",
       "errorType": "sql_injection",
@@ -93,16 +93,17 @@
       "testCaseId": "CY-TC010",
       "description": "Username with special characters",
       "username": "user+special@test.com",
-      "password": "ValidPassword123",
-      "expectedResult": "success"
+      "password": "admin123",
+      "expectedResult": "error",
+      "expectedError": "Invalid credentials"
     },
     {
       "testCaseId": "CY-TC011",
       "description": "Very long username",
-      "username": "verylongusernamethatshouldstillbevalidandtested@test.com",
-      "password": "ValidPassword123",
+      "username": "verylongusernamethatshouldstillbevalidandtestedverylongusername@test.com",
+      "password": "admin123",
       "expectedResult": "error",
-      "expectedError": "Username too long"
+      "expectedError": "Invalid credentials"
     }
   ]
 }
