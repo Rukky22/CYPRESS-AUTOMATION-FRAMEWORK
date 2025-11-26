@@ -1,6 +1,4 @@
-/**
- * Login Page Object Model
- */
+//Login Page Object Model
 
 class LoginPage {
   // Locators
@@ -20,9 +18,8 @@ class LoginPage {
     return cy.contains('.oxd-input-field-error-message ', 'Required');
   }
 
-  /**
-   * Navigate to login page
-   */
+  //Navigate to login page
+
   visit(url = '/web/index.php/auth/login') {
     cy.visit(url);
     cy.url().should('include', '/auth/login');
@@ -33,9 +30,8 @@ class LoginPage {
     this.loginButton.should('be.visible');
   }
 
-  /**
-   * Enter username
-   */
+  //Enter username
+
   enterUsername(username) {
     cy.log(`Entering username: ${username}`);
     if (username === null || username === undefined || username === '') {
@@ -46,9 +42,8 @@ class LoginPage {
     this.usernameInput.clear().type(username);
   }
 
-  /**
-   * Enter password
-   */
+  //Enter password
+
   enterPassword(password) {
     cy.log('Entering password');
     if (password === null || password === undefined || password === '') {
@@ -59,26 +54,23 @@ class LoginPage {
     this.passwordInput.clear().type(password);
   }
 
-  /**
-   * Click login button
-   */
+  //Click login button
+
   clickLoginButton() {
     cy.log('Clicking login button');
     this.loginButton.click();
   }
 
-  /**
-   * Complete login flow
-   */
+  //Complete login flow
+
   login(username, password) {
     this.enterUsername(username);
     this.enterPassword(password);
     this.clickLoginButton();
   }
 
-  /**
-   * Verify successful login
-   */
+  //Verify successful login
+
   verifySuccessfulLogin(expectedUrl) {
     cy.log('Verifying successful login');
     cy.url({ timeout: 10000 }).should('include', expectedUrl);
@@ -91,9 +83,8 @@ class LoginPage {
     });
   }
 
-  /**
-   * Verify login failure with error message
-   */
+  //Verify login failure with error message
+
   verifyLoginFailure(expectedError) {
     cy.log('Verifying login failure');
     this.errorMessage
@@ -104,9 +95,7 @@ class LoginPage {
     cy.url().should('include', '/auth/login');
   }
 
-  /**
-   * Verify login failure due to empty fields
-   */
+  //Verify login failure due to empty fields
 
   verifyEmptyFieldError(expectedError) {
     cy.log('Verifying empty field error messages');
@@ -118,16 +107,14 @@ class LoginPage {
     cy.url().should('include', '/auth/login');
   }
 
-  /**
-   * Verify password field is masked
-   */
+  //Verify password field is masked
+
   verifyPasswordIsMasked() {
     this.passwordInput.should('have.attr', 'type', 'password');
   }
 
-  /**
-   * Verify all form elements exist
-   */
+  //Verify all form elements exist
+
   verifyFormElements() {
     this.usernameInput.should('exist');
     this.passwordInput.should('exist');

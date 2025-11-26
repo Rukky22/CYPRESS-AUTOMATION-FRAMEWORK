@@ -1,10 +1,10 @@
-const { defineConfig } = require("cypress");
-require("dotenv").config();
+const { defineConfig } = require('cypress');
+require('dotenv').config();
 
 module.exports = defineConfig({
   e2e: {
     setupNodeEvents(on, config) {
-      on("task", {
+      on('task', {
         log(message) {
           console.log(message);
           return null;
@@ -13,16 +13,16 @@ module.exports = defineConfig({
       return config;
     },
 
-    baseUrl: process.env.CYPRESS_BASE_URL || "https://yourapp.com",
-    specPattern: "cypress/e2e/**/*.cy.js",
-    supportFile: "cypress/support/e2e.js",
+    baseUrl: process.env.CYPRESS_BASE_URL || 'https://yourapp.com',
+    specPattern: 'cypress/e2e/**/*.cy.js',
+    supportFile: 'cypress/support/e2e.js',
 
     // ✅ Screenshot configuration
-    screenshotsFolder: "cypress/screenshots",
+    screenshotsFolder: 'cypress/screenshots',
     screenshotOnRunFailure: true,
 
     // ✅ Video configuration
-    videosFolder: "cypress/videos",
+    videosFolder: 'cypress/videos',
     video: true,
     videoCompression: 32,
 
@@ -36,17 +36,26 @@ module.exports = defineConfig({
     responseTimeout: parseInt(process.env.CYPRESS_RESPONSE_TIMEOUT) || 15000,
     execTimeout: parseInt(process.env.CYPRESS_EXEC_TIMEOUT) || 60000,
 
+    // Session storage
+    experimentalSessionAndOrigin: true,
+
     env: {
-      environment: process.env.CYPRESS_ENVIRONMENT || "dev",
+      environment: process.env.CYPRESS_ENVIRONMENT || 'dev',
     },
 
-    reporter: "mochawesome",
+    reporter: 'mochawesome',
     reporterOptions: {
-      reportDir: "cypress/reports/json",
+      reportDir: 'cypress/reports/json',
       overwrite: false,
       html: false,
       json: true,
-      timestamp: "mmddyyyy_HHMMss",
+      timestamp: 'mmddyyyy_HHMMss',
+      charts: true,
+      reportPageTitle: 'Cypress Test Report - Raenest Interview',
+    },
+    // API testing
+    env: {
+      apiUrl: 'https://reqres.in/api',
     },
   },
 });

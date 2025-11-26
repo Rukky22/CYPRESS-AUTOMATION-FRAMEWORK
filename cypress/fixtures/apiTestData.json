@@ -1,0 +1,40 @@
+{
+  "environments": {
+    "dev": {
+      "url": "https://reqres.in/api"
+    },
+    "staging": {
+      "url": "https://staging.yourapp.com/login"
+    },
+    "production": {
+      "url": "https://yourapp.com/login"
+    }
+  },
+  "auth": {
+    "validUser": {
+      "email": "eve.holt@reqres.in",
+      "password": "pistol"
+    },
+    "invalidUser": {
+      "email": "invalid@reqres.in",
+      "password": "wrongpassword"
+    },
+    "missingPassword": {
+      "email": "eve.holt@reqres.in"
+    }
+  },
+  "users": {
+    "newUser": {
+      "name": "John Doe",
+      "job": "QA Engineer"
+    },
+    "updateUser": {
+      "name": "Jane Smith",
+      "job": "Senior QA Engineer"
+    },
+    "testUserIds": [1, 2, 3, 4, 5]
+  },
+  "resources": {
+    "testResourceIds": [1, 2, 3]
+  }
+}
